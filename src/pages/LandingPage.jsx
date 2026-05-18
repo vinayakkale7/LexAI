@@ -19,7 +19,7 @@ export default function LandingPage() {
   ];
 
   useEffect(() => {
-    if (isUploading) {
+    if (isUploading && file) {
       const interval = setInterval(() => {
         setLoadingMsgIdx((prev) => {
           if (prev < loadingMessages.length - 1) return prev + 1;
@@ -27,16 +27,45 @@ export default function LandingPage() {
         });
       }, 1500);
       
-      const timeout = setTimeout(() => {
-        navigate("/workspace", { state: { hasDocument: true, fileName: file?.name } });
-      }, 6500);
+      const uploadDocument = async () => {
+        try {
+          const formData = new FormData();
+          formData.append("file", file);
+          
+          const response = await fetch("http://localhost:8000/upload", {
+            method: "POST",
+            body: formData,
+          });
+          
+          if (!response.ok) {
+            let errDetail = "Upload failed";
+            try {
+              const errData = await response.json();
+              errDetail = errData.detail || errDetail;
+            } catch (e) {
+              errDetail = `Upload failed with status ${response.status}`;
+            }
+            throw new Error(errDetail);
+          }
+          
+          const data = await response.json();
+          clearInterval(interval);
+          navigate("/workspace", { state: { hasDocument: true, documentData: data } });
+        } catch (error) {
+          console.error("Upload error:", error);
+          clearInterval(interval);
+          // Fallback or handle error
+          navigate("/workspace", { state: { hasDocument: true, documentData: { filename: file.name, preview: `Error: ${error.message}` } } });
+        }
+      };
+
+      uploadDocument();
 
       return () => {
         clearInterval(interval);
-        clearTimeout(timeout);
       };
     }
-  }, [isUploading, navigate]);
+  }, [isUploading, file, navigate]);
 
   const handleDragOver = (e) => {
     e.preventDefault();

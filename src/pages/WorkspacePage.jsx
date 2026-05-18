@@ -7,6 +7,8 @@ import { Link, useLocation } from "react-router-dom";
 export default function WorkspacePage() {
   const location = useLocation();
   const hasDocument = location.state?.hasDocument || false;
+  const documentData = location.state?.documentData || null;
+
   return (
     <div className="flex flex-col h-screen w-full bg-background overflow-hidden relative">
       {/* Background Ambience & Noise */}
@@ -29,7 +31,7 @@ export default function WorkspacePage() {
             {hasDocument ? (
               <>
                 <span className="text-muted-foreground">/</span>
-                <span className="font-medium text-foreground">Non-Disclosure Agreement_v2.pdf</span>
+                <span className="font-medium text-foreground">{documentData?.filename || "Uploaded Document"}</span>
               </>
             ) : (
               <>
@@ -125,7 +127,7 @@ export default function WorkspacePage() {
            </div>
          ) : (
            <div className="w-full max-w-4xl">
-              <DocumentWorkspace />
+              <DocumentWorkspace documentData={documentData} />
            </div>
          )}
       </main>
