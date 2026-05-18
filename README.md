@@ -1,49 +1,188 @@
-# LexAI — AI-Powered Legal Document Intelligence Workspace
+# LexAI — AI Legal Document Intelligence Workspace
 
-Modern AI-powered legal document analysis workspace inspired by Notion, Linear, and Perplexity.
+LexAI is a modern AI-powered legal document analysis platform that helps users upload, analyze, and interact with legal contracts using intelligent document processing.
 
-## Features
+The platform combines a premium React workspace UI with a FastAPI backend for PDF upload and text extraction.
 
-- AI-powered legal workspace
-- Contract upload and analysis
-- Clause extraction
-- Risk detection
-- Floating AI assistant
-- Workspace-first SaaS UI
-- Modern minimal interface
+---
 
-## Tech Stack
+# Features
 
-### Frontend
-- React + Vite
+## Frontend
+- Modern SaaS workspace UI
+- Dark-mode-first premium design
+- Dynamic document rendering
+- Responsive workspace layout
+- Floating AI assistant interface
+
+## Backend
+- FastAPI backend architecture
+- PDF upload API
+- Full PDF text extraction
+- Swagger API documentation
+- Modular scalable structure
+
+## AI Foundation
+- Document ingestion pipeline
+- AI-ready architecture
+- Future support for:
+  - clause extraction
+  - risk analysis
+  - AI summaries
+  - RAG chat assistant
+
+---
+
+# Tech Stack
+
+## Frontend
+- React
+- Vite
 - Tailwind CSS
-- shadcn/ui
 - Framer Motion
+- shadcn/ui
 
-### Planned Backend
+## Backend
 - FastAPI
-- LangChain
-- ChromaDB
-- Gemini/OpenAI APIs
+- Uvicorn
+- Python 3.11+
+- pdfplumber
 
-## UI Inspiration
+---
 
-- Notion
-- Linear
-- Perplexity
-- Vercel
+# Project Structure
 
-## Current Status
+```text
+LexAI/
+│
+├── backend/
+├── public/
+├── src/
+├── package.json
+└── README.md
+```
 
-✅ Workspace UI completed  
-🚧 AI pipeline in progress  
-🚧 Document parsing in progress
+---
 
+# Current Features
 
-## Future Plans
+✅ PDF upload system  
+✅ Full PDF text extraction  
+✅ Dynamic document rendering  
+✅ Frontend ↔ backend integration  
+✅ Workspace-based legal document UI  
+✅ FastAPI backend architecture  
 
-- PDF clause extraction
-- RAG-based legal assistant
-- AI risk analysis
-- Exportable reports
-- Multi-document workspace
+---
+
+# Upcoming Features
+
+🚧 AI clause extraction  
+🚧 Legal risk analysis  
+🚧 AI-generated summaries  
+🚧 AI legal assistant  
+🚧 RAG-based document chat  
+
+---
+
+# Frontend Setup
+
+## Install dependencies
+
+```bash
+npm install
+```
+
+## Start frontend
+
+```bash
+npm run dev
+```
+
+Frontend runs on:
+
+```text
+http://localhost:5173
+```
+
+---
+
+# Backend Setup (Windows)
+
+## 1. Navigate to backend folder
+
+```bash
+cd backend
+```
+
+## 2. Create virtual environment
+
+```bash
+python -m venv venv
+```
+
+## 3. Activate virtual environment
+
+```bash
+.\venv\Scripts\Activate
+```
+
+## 4. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+## 5. Start FastAPI server
+
+```bash
+uvicorn app.main:app --reload
+```
+
+Backend runs on:
+
+```text
+http://localhost:8000
+```
+
+---
+
+# API Documentation
+
+Swagger API Docs:
+
+```text
+http://localhost:8000/docs
+```
+
+---
+
+# Available API Endpoints
+
+## Health Check
+
+```http
+GET /health
+```
+
+## Upload PDF
+
+```http
+POST /upload
+```
+
+---
+
+# Workspace Flow
+
+```text
+Upload PDF
+      ↓
+FastAPI Backend
+      ↓
+PDF Text Extraction
+      ↓
+Frontend Rendering
+      ↓
+AI Legal Workspace
+```
