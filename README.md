@@ -6,8 +6,9 @@ Modern AI-powered legal document analysis workspace inspired by Notion, Linear, 
 
 - AI-powered legal workspace
 - Contract upload and analysis
-- Clause extraction
-- Risk detection
+- **Split-pane Document Reader & AI Insights UI**
+- Real-time clause extraction & summary
+- Automated Risk detection (Low/Medium/High)
 - Floating AI assistant
 - Workspace-first SaaS UI
 - Modern minimal interface
@@ -36,8 +37,8 @@ Modern AI-powered legal document analysis workspace inspired by Notion, Linear, 
 ## Current Status
 
 ✅ Workspace UI completed  
-🚧 AI pipeline in progress  
-🚧 Document parsing in progress
+✅ AI pipeline integrated (FastAPI + Gemini)  
+✅ Document parsing & risk analysis completed
 
 
 ## Future Plans

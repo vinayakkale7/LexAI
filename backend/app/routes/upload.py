@@ -48,6 +48,10 @@ async def upload_document(file: UploadFile = File(...)):
     try:
         from fastapi.concurrency import run_in_threadpool
         extracted_text = await run_in_threadpool(extract_text_from_pdf, file_path)
+        
+        print("Uploaded:", file.filename)
+        print("Text Length:", len(extracted_text))
+        
     except Exception as e:
         # We might want to keep the file or delete it, for now we keep it but return an error
         raise HTTPException(status_code=500, detail=str(e))

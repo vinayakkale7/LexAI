@@ -126,7 +126,7 @@ export default function WorkspacePage() {
              </div>
            </div>
          ) : (
-           <div className="w-full max-w-4xl">
+           <div className="w-full max-w-7xl h-full pb-4">
               <DocumentWorkspace documentData={documentData} />
            </div>
          )}

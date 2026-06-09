@@ -1,6 +1,9 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes import health, upload
+from app.routes import health, upload, analyze, chat
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -27,6 +30,8 @@ app.add_middleware(
 # Include routers
 app.include_router(health.router, tags=["Health"])
 app.include_router(upload.router, tags=["Uploads"])
+app.include_router(analyze.router, tags=["Analyze"])
+app.include_router(chat.router, tags=["Chat"])
 
 @app.get("/")
 async def root():

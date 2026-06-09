@@ -1,14 +1,62 @@
-import { useState } from "react";
-import { Send, Bot, User, Sparkles, Calendar, ShieldAlert, X, MessageSquare } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Send, Bot, User, Sparkles, Calendar, ShieldAlert, X, MessageSquare, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 
-export default function AIAssistant() {
+export default function AIAssistant({ documentData }) {
   const [messages, setMessages] = useState([
-    { role: "assistant", content: "I've analyzed the NDA. I found 1 high-risk clause regarding indemnification. Would you like me to summarize the key obligations?" }
+    { role: "assistant", content: "I'm ready to answer questions about your document. What would you like to know?" }
   ]);
   const [input, setInput] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+  
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, isTyping]);
+
+  const handleSend = async () => {
+    if (!input.trim() || !documentData?.content) return;
+    
+    const userMessage = { role: "user", content: input };
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
+    setInput("");
+    setIsTyping(true);
+
+    try {
+      const response = await fetch("http://localhost:8000/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          document_content: documentData.content,
+          messages: newMessages
+        })
+      });
+
+      if (!response.ok) throw new Error("Failed to get response");
+      
+      const data = await response.json();
+      setMessages([...newMessages, { role: "assistant", content: data.response }]);
+    } catch (error) {
+      console.error(error);
+      setMessages([...newMessages, { role: "assistant", content: "Sorry, I encountered an error while processing your request." }]);
+    } finally {
+      setIsTyping(false);
+    }
+  };
+
+  const handleSuggestion = (suggestion) => {
+    setInput(suggestion);
+    // Optional: auto-send
+    // setTimeout(() => handleSend(), 100);
+  };
 
   return (
     <>
@@ -24,9 +72,9 @@ export default function AIAssistant() {
             <div className="relative group">
               <Button 
                 onClick={() => setIsOpen(true)}
-                className="w-11 h-11 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.1)] hover:shadow-[0_4px_25px_rgba(59,130,246,0.15)] bg-background/40 backdrop-blur-xl border border-border hover:border-primary/30 text-muted-foreground hover:text-primary hover:bg-background/60 flex items-center justify-center transition-all duration-300 hover:scale-[1.02]"
+                className="w-14 h-14 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.2)] hover:shadow-[0_4px_25px_rgba(59,130,246,0.25)] bg-card border border-primary/20 hover:border-primary/50 text-foreground flex items-center justify-center transition-all duration-300 hover:scale-[1.02]"
               >
-                <MessageSquare className="w-5 h-5" />
+                <MessageSquare className="w-6 h-6 text-primary" />
               </Button>
               <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-popover text-popover-foreground text-[10px] font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap border border-border shadow-sm">
                 Ask LexAI
@@ -57,111 +105,106 @@ export default function AIAssistant() {
             animate={{ x: 0, boxShadow: "-10px 0 30px rgba(0,0,0,0.1)" }}
             exit={{ x: "100%", boxShadow: "-10px 0 30px rgba(0,0,0,0)" }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed right-0 top-0 w-[380px] max-w-[90vw] h-screen border-l border-border bg-card flex flex-col z-50"
+            className="fixed right-0 top-0 w-[400px] max-w-[90vw] h-screen border-l border-border bg-card flex flex-col z-50 shadow-2xl"
           >
             
             {/* Header */}
-            <header className="h-14 border-b border-border flex items-center px-4 justify-between shrink-0 bg-background">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center relative">
-             <Bot className="w-4 h-4 text-primary" />
-             <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-green-500 border border-background shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
-          </div>
-          <div>
-              <h3 className="text-sm font-semibold text-foreground">LexAI Assistant</h3>
-              <p className="text-[11px] text-primary">Online & analyzing</p>
-           </div>
-         </div>
-         <div className="flex items-center gap-1">
-           <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
-             <Sparkles className="w-4 h-4" />
-           </Button>
-           <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="h-8 w-8 text-muted-foreground hover:text-foreground">
-             <X className="w-4 h-4" />
-           </Button>
-         </div>
-       </header>
+            <header className="h-16 border-b border-border flex items-center px-5 justify-between shrink-0 bg-background/80 backdrop-blur-md">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center relative">
+                  <Bot className="w-5 h-5 text-primary" />
+                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-green-500 border-2 border-background shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-foreground tracking-tight">LexAI Assistant</h3>
+                  <p className="text-[11px] text-primary/80 font-medium">Document Intelligence</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1">
+                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
+                  <Sparkles className="w-4 h-4" />
+                </Button>
+                <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="h-8 w-8 text-muted-foreground hover:text-foreground">
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+            </header>
 
-      {/* Insights / Widgets Area (Scrollable above chat) */}
-      <div className="p-3 space-y-3 overflow-y-auto max-h-[40%] border-b border-border custom-scrollbar">
-        <h4 className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">Quick Insights</h4>
-        
-        {/* Insight Card: Risk Summary */}
-        <div className="glass-panel p-2.5 rounded-lg border border-risk-high/20 bg-risk-high/5 floating-element cursor-pointer">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2 text-risk-high">
-              <ShieldAlert className="w-4 h-4" />
-              <span className="text-sm font-semibold">1 Critical Risk</span>
+            {/* Chat Messages */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-6 custom-scrollbar bg-background/30">
+              {!documentData?.content && (
+                <div className="p-3 bg-amber-500/10 border border-amber-500/20 text-amber-500 text-xs rounded-lg flex items-center gap-2">
+                  <ShieldAlert className="w-4 h-4 shrink-0" />
+                  Please upload a document to enable document-aware chat.
+                </div>
+              )}
+              
+              {messages.map((msg, i) => (
+                <div key={i} className={`flex gap-3 ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+                    msg.role === "assistant" ? "bg-primary/10 text-primary border border-primary/20" : "bg-secondary/10 text-secondary border border-secondary/20"
+                  }`}>
+                    {msg.role === "assistant" ? <Bot className="w-4 h-4" /> : <User className="w-4 h-4" />}
+                  </div>
+                  <div className={`px-4 py-2.5 rounded-2xl max-w-[85%] text-sm leading-relaxed ${
+                    msg.role === "user" 
+                      ? "bg-primary text-primary-foreground rounded-tr-sm shadow-md" 
+                      : "bg-card border border-border text-foreground rounded-tl-sm shadow-sm"
+                  }`}>
+                    {msg.content}
+                  </div>
+                </div>
+              ))}
+              
+              {/* Typing Indicator */}
+              {isTyping && (
+                <div className="flex gap-3">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 text-primary border border-primary/20 flex items-center justify-center shrink-0">
+                    <Bot className="w-4 h-4" />
+                  </div>
+                  <div className="px-4 py-3 rounded-2xl bg-card border border-border rounded-tl-sm flex items-center gap-1.5 w-16 shadow-sm">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: "0ms" }} />
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: "150ms" }} />
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: "300ms" }} />
+                  </div>
+                </div>
+              )}
+              <div ref={messagesEndRef} />
             </div>
-            <span className="text-xs bg-risk-high/20 px-2 py-0.5 rounded-full text-risk-high">Clause 4</span>
-          </div>
-          <p className="text-xs text-white/70">Broad indemnification obligations detected. Recommended to negotiate limits.</p>
-        </div>
 
-        {/* Insight Card: Important Dates */}
-        <div className="glass-panel p-2.5 rounded-lg border border-border bg-card floating-element cursor-pointer">
-          <div className="flex items-center gap-2 text-primary mb-2">
-            <Calendar className="w-4 h-4" />
-            <span className="text-sm font-semibold">Key Dates</span>
-          </div>
-          <p className="text-xs text-white/70">Effective Date: <span className="text-white font-medium">May 17, 2026</span></p>
-          <p className="text-xs text-white/70 mt-1">Expiration: <span className="text-white font-medium">Perpetual</span></p>
-        </div>
-      </div>
-
-      {/* Chat Messages */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-4 custom-scrollbar">
-        {messages.map((msg, i) => (
-          <div key={i} className={`flex gap-3 ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
-             <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-               msg.role === "assistant" ? "bg-primary/20 text-primary border border-primary/30" : "bg-secondary/20 text-secondary border border-secondary/30"
-             }`}>
-               {msg.role === "assistant" ? <Bot className="w-4 h-4" /> : <User className="w-4 h-4" />}
-             </div>
-             <div className={`px-3 py-2 rounded-xl max-w-[85%] text-sm leading-relaxed ${
-               msg.role === "user" 
-                ? "bg-muted border border-border text-foreground rounded-tr-sm" 
-                : "bg-primary/10 border border-primary/20 text-foreground rounded-tl-sm shadow-sm"
-             }`}>
-               {msg.content}
-             </div>
-          </div>
-        ))}
-        {/* Typing Indicator */}
-        <div className="flex gap-3">
-           <div className="w-8 h-8 rounded-full bg-primary/20 text-primary border border-primary/30 flex items-center justify-center shrink-0">
-             <Bot className="w-4 h-4" />
-           </div>
-           <div className="px-3 py-2 rounded-xl bg-muted/50 border border-border rounded-tl-sm flex items-center gap-1.5 w-14">
-             <span className="w-1.5 h-1.5 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: "0ms" }} />
-             <span className="w-1.5 h-1.5 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: "150ms" }} />
-             <span className="w-1.5 h-1.5 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: "300ms" }} />
-           </div>
-        </div>
-      </div>
-
-      {/* Input Area */}
-      <div className="p-3 border-t border-border shrink-0 bg-background">
-        <div className="relative flex items-center">
-           <input 
-             type="text" 
-             value={input}
-             onChange={(e) => setInput(e.target.value)}
-             placeholder="Ask about this document..."
-             className="w-full bg-card border border-border rounded-lg pl-3 pr-10 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-muted-foreground shadow-sm"
-           />
-           <Button size="icon" className="absolute right-1 top-1 h-7 w-7 bg-primary hover:bg-primary/90 text-primary-foreground rounded-md">
-             <Send className="w-4 h-4" />
-           </Button>
-        </div>
-        <div className="flex items-center gap-2 mt-3 overflow-x-auto pb-1 hide-scrollbar">
-          {["Summarize obligations", "Find payment terms", "Check jurisdiction"].map((suggestion, i) => (
-             <button key={i} className="text-xs whitespace-nowrap bg-white/5 hover:bg-white/10 border border-white/10 px-3 py-1.5 rounded-lg text-muted-foreground hover:text-white transition-colors">
-               {suggestion}
-             </button>
-          ))}
-      </div>
-      </div>
+            {/* Input Area */}
+            <div className="p-4 border-t border-border shrink-0 bg-background/80 backdrop-blur-md">
+              <div className="flex flex-wrap gap-2 mb-3">
+                {["Summarize obligations", "What is the notice period?", "Find payment terms"].map((suggestion, i) => (
+                  <button 
+                    key={i} 
+                    onClick={() => handleSuggestion(suggestion)}
+                    className="text-[11px] font-medium bg-muted/50 hover:bg-primary/10 border border-border hover:border-primary/30 px-3 py-1.5 rounded-full text-muted-foreground hover:text-primary transition-all duration-200"
+                  >
+                    {suggestion}
+                  </button>
+                ))}
+              </div>
+              <div className="relative flex items-center group">
+                <input 
+                  type="text" 
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleSend()}
+                  placeholder="Ask a question about the document..."
+                  disabled={!documentData?.content || isTyping}
+                  className="w-full bg-card border border-border group-hover:border-primary/50 focus:border-primary rounded-xl pl-4 pr-12 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-muted-foreground shadow-sm disabled:opacity-50"
+                />
+                <Button 
+                  size="icon" 
+                  onClick={handleSend}
+                  disabled={!input.trim() || !documentData?.content || isTyping}
+                  className="absolute right-1.5 top-1.5 h-9 w-9 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg transition-transform active:scale-95 disabled:opacity-50"
+                >
+                  <Send className="w-4 h-4 ml-0.5" />
+                </Button>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

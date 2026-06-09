@@ -34,3 +34,16 @@ backend/uploads/*
 
 # Virtual environment
 .venv/
+
+# Environment variables
+.env
+*.env
+backend/.env
+
+# Python virtual environments
+venv/
+.venv/
+
+# Uploaded files
+backend/uploads/
+
