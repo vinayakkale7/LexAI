@@ -1,4 +1,4 @@
-# LexAI — AI-Powered Legal Document Intelligence Workspace
+# LexAI — AI Legal Document Intelligence Workspace
 
 Modern AI-powered legal document analysis workspace inspired by Notion, Linear, and Perplexity.
 
@@ -6,9 +6,8 @@ Modern AI-powered legal document analysis workspace inspired by Notion, Linear, 
 
 - AI-powered legal workspace
 - Contract upload and analysis
-- **Split-pane Document Reader & AI Insights UI**
-- Real-time clause extraction & summary
-- Automated Risk detection (Low/Medium/High)
+- Clause extraction
+- Risk detection
 - Floating AI assistant
 - Workspace-first SaaS UI
 - Modern minimal interface
@@ -18,10 +17,10 @@ Modern AI-powered legal document analysis workspace inspired by Notion, Linear, 
 ### Frontend
 - React + Vite
 - Tailwind CSS
-- shadcn/ui
 - Framer Motion
+- shadcn/ui
 
-### Planned Backend
+## Backend
 - FastAPI
 - LangChain
 - ChromaDB
@@ -37,8 +36,8 @@ Modern AI-powered legal document analysis workspace inspired by Notion, Linear, 
 ## Current Status
 
 ✅ Workspace UI completed  
-✅ AI pipeline integrated (FastAPI + Gemini)  
-✅ Document parsing & risk analysis completed
+🚧 AI pipeline in progress  
+🚧 Document parsing in progress
 
 
 ## Future Plans
