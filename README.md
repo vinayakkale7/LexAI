@@ -1,8 +1,6 @@
-# LexAI — AI Legal Document Intelligence Workspace
+# LexNova — AI Legal Document Intelligence Workspace
 
-LexAI is a modern AI-powered legal document analysis platform that helps users upload, analyze, and interact with legal contracts using intelligent document processing.
-
-The platform combines a premium React workspace UI with a FastAPI backend for PDF upload and text extraction.
+LexNova is an AI-powered legal document intelligence platform that enables users to upload, analyze, and interact with legal documents through an intuitive workspace. It combines a modern React frontend with a scalable FastAPI backend to simplify legal document analysis and text extraction.
 
 ---
 
@@ -13,23 +11,18 @@ The platform combines a premium React workspace UI with a FastAPI backend for PD
 - Dark-mode-first premium design
 - Dynamic document rendering
 - Responsive workspace layout
-- Floating AI assistant interface
+- Interactive AI assistant panel
 
 ## Backend
 - FastAPI backend architecture
 - PDF upload API
 - Full PDF text extraction
 - Swagger API documentation
-- Modular scalable structure
+- Modular and scalable structure
 
 ## AI Foundation
-- Document ingestion pipeline
-- AI-ready architecture
-- Future support for:
-  - clause extraction
-  - risk analysis
-  - AI summaries
-  - RAG chat assistant
+- AI-ready document processing pipeline
+- Intelligent document analysis architecture
 
 ---
 
@@ -53,7 +46,7 @@ The platform combines a premium React workspace UI with a FastAPI backend for PD
 # Project Structure
 
 ```text
-LexAI/
+LexNova/
 │
 ├── backend/
 ├── public/
@@ -66,22 +59,20 @@ LexAI/
 
 # Current Features
 
-✅ PDF upload system  
-✅ Full PDF text extraction  
-✅ Dynamic document rendering  
-✅ Frontend ↔ backend integration  
-✅ Workspace-based legal document UI  
-✅ FastAPI backend architecture  
+- ✅ PDF upload system
+- ✅ Full PDF text extraction
+- ✅ Dynamic document rendering
+- ✅ Frontend ↔ Backend integration
+- ✅ AI legal workspace
+- ✅ FastAPI backend architecture
 
 ---
 
 # Upcoming Features
 
-🚧 AI clause extraction  
-🚧 Legal risk analysis  
-🚧 AI-generated summaries  
-🚧 AI legal assistant  
-🚧 RAG-based document chat  
+- 🚧 AI clause extraction
+- 🚧 Legal risk analysis
+- 🚧 AI-powered document summaries
 
 ---
 
@@ -99,7 +90,7 @@ npm install
 npm run dev
 ```
 
-Frontend runs on:
+Frontend runs at:
 
 ```text
 http://localhost:5173
@@ -109,7 +100,7 @@ http://localhost:5173
 
 # Backend Setup (Windows)
 
-## 1. Navigate to backend folder
+## 1. Navigate to backend
 
 ```bash
 cd backend
@@ -124,7 +115,7 @@ python -m venv venv
 ## 3. Activate virtual environment
 
 ```bash
-.\venv\Scripts\Activate
+.\venv\Scripts\activate
 ```
 
 ## 4. Install dependencies
@@ -139,7 +130,7 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-Backend runs on:
+Backend runs at:
 
 ```text
 http://localhost:8000
@@ -149,7 +140,7 @@ http://localhost:8000
 
 # API Documentation
 
-Swagger API Docs:
+Swagger UI:
 
 ```text
 http://localhost:8000/docs
@@ -176,13 +167,13 @@ POST /upload
 # Workspace Flow
 
 ```text
-Upload PDF
-      ↓
+Upload Legal Document
+        ↓
 FastAPI Backend
-      ↓
+        ↓
 PDF Text Extraction
-      ↓
+        ↓
 Frontend Rendering
-      ↓
+        ↓
 AI Legal Workspace
 ```
